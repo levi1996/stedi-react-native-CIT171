@@ -62,9 +62,9 @@ export default function App(props) {
 
   } else{
     return (
-      <view>
+      <View>
         <Login/>
-      </view>
+      </View>
     )
   }
 }
