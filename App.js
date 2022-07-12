@@ -10,25 +10,23 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Login from './Login.js';
 import { useState } from "react";
-
 // import Icons from "./Icons";
 const Tab = createMaterialBottomTabNavigator();
-
-export default function App(props) {
+export default function App() {
   const [userLoggedIn, setUserLoggedIn] = useState(false);
-
+  const [userName, setUserName] = useState("");
   if(userLoggedIn){
-
   return (
     <NavigationContainer>
       <Tab.Navigator
         initialRouteName='Home'
         activeColor='white'
-        barStyle={{ backgroundColor: 'green' }}
+        barStyle={{ backgroundColor: 'teal' }}
       >
         <Tab.Screen
           name='Home'
-          component={Home}
+          children={()=><Home loggedInUser={userName}/>}
+          //component={Home}
           options={{
             tabBarLabel: 'Home',
             tabBarIcon: ({ color }) => (
@@ -59,17 +57,14 @@ export default function App(props) {
       </Tab.Navigator>
     </NavigationContainer>
   );
-
   } else{
     return (
-      <View>
-        <Login/>
-      </View>
+      <Login setUserLoggedIn={setUserLoggedIn}/>
     )
   }
 }
-
-
 const styles = StyleSheet.create({
-  
+  margin:{
+    marginTop:10
+  }
 });

@@ -1,29 +1,35 @@
 import {useState} from "react";
 import { SafeAreaView, StyleSheet, TextInput, Text, TouchableOpacity } from "react-native";
-
-
 const sendText = async (phoneNumber) => {
   console.log("PhoneNumber: ",phoneNumber);
-  const loginResponse = await fetch('https://dev.stedi.me/twofactorlogin/'+phoneNumber,{
+  const tokenResponse = await fetch('https://dev.stedi.me/twofactorlogin/'+phoneNumber,{
     method: 'POST',
     headers:{
       'content-type':'application/text'
     }
   });
-  const LoginResponseText = await LoginResponse.text();//converts the promise to a string by using await
-  console.log("Login Response",LoginResponseText);
-
-}
-
-const getToken = async({phoneNumber,oneTimePassword}) => {//This code is not complet 
- console.log("phoneNumber",phoneNumber);
- console.log("OTP",oneTimePassword);
- const LoginResponse=await fetch() 
-  method: "POST",
-
+const tokenResponseText = await tokenResponse.text();
+  console.log('Login Response',tokenResponse.text());//print the response
+};
+const getToken = async({phoneNumber, oneTimePassword, setUserLoggedIn}) =>{
+  const tokenResponse = await fetch('https://dev.stedi.me/twofactorlogin',{
+    method: 'POST',
+    body:JSON.stringify({oneTimePassword, phoneNumber}),
+    headers: {
+      'content-type':'application/json'
+    }
+  });
   
+const responseCode = tokenResponse.status;//200 means logged in successfully
+console.log("Response Status Code", responseCode);
+if(responseCode==200){
+  setUserLoggedIn(true);
+}  
+
+const tokenResponseString = await tokenResponse.text;
+
 }
-const Login = () => {
+const Login = (props) => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [oneTimePassword, setOneTimePassword] = useState(null);
   return (
@@ -50,7 +56,9 @@ const Login = () => {
       />
         <TouchableOpacity
         style={styles.button2}
-        onPress={()=>{sendText(phoneNumber)}}
+        onPress={()=>{
+          getToken({phoneNumber, oneTimePassword, setUserLoggedIn:props.setUserLoggedIn});
+        }}
         >
         <Text>Log In</Text>
         </TouchableOpacity>
@@ -74,7 +82,7 @@ marginTop: 100
 },
 button2: {
   alignItems: "center",
-  backgroundColor: "#1E7D7D",
+  backgroundColor: "#03DFFC",
   padding: 10
 },
 });
